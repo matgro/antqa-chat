@@ -72,6 +72,41 @@ interface IAnswerProps {
   suggestionClick?: (suggestion: string) => void
 }
 
+const menuOptionsFor = (content: string) => {
+  if (content.includes('¡Hola! Bienvenido al sistema de atención del Seminario')) {
+    return [
+      'Quiero estudiar en el Seminario',
+      'Ya soy Alumno del Seminario',
+      'Horarios de Atención',
+      'Hablar con una persona',
+    ]
+  }
+
+  if (content.includes('Aspirantes — seleccioná una opción')) {
+    return [
+      'Oferta Académica',
+      'Requisitos de Ingreso',
+      'Aranceles y Medios de Pago',
+      'Iniciar mi Inscripción',
+      'Hablar con un asesor de Admisión',
+    ]
+  }
+
+  if (content.includes('Alumnos — seleccioná una opción')) {
+    return [
+      'Informar un pago',
+      'Consultar mi estado de cuenta',
+      'Solicitar Certificado de Alumno Regular',
+      'Calendario Académico',
+      'Consulta sobre mi Legajo o Documentación',
+      'Certificados',
+      'Horarios y Aulas',
+    ]
+  }
+
+  return []
+}
+
 // The component needs to maintain its own state to control whether to display input component
 const Answer: FC<IAnswerProps> = ({
   item,
@@ -82,6 +117,9 @@ const Answer: FC<IAnswerProps> = ({
   suggestionClick = () => { },
 }) => {
   const { id, content, feedback, agent_thoughts, workflowProcess, suggestedQuestions = [] } = item
+  const menuOptions = menuOptionsFor(content)
+  const visibleSuggestions = menuOptions.length > 0 ? menuOptions : suggestedQuestions
+  const visibleContent = menuOptions.length > 0 ? content.split('\n')[0] : content
   const isAgentMode = !!agent_thoughts && agent_thoughts.length > 0
 
   const { t } = useTranslation()
@@ -202,12 +240,12 @@ const Answer: FC<IAnswerProps> = ({
                 : (isAgentMode
                   ? agentModeAnswer
                   : (
-                    <StreamdownMarkdown content={content} />
+                    <StreamdownMarkdown content={visibleContent} />
                   ))}
-              {suggestedQuestions.length > 0 && (
+              {visibleSuggestions.length > 0 && (
                 <div className="mt-3">
                   <div className="flex gap-1 mt-1 flex-wrap">
-                    {suggestedQuestions.map((suggestion, index) => (
+                    {visibleSuggestions.map((suggestion, index) => (
                       <div key={index} className="flex items-center gap-1">
                         <Button className="text-sm" type="link" onClick={() => suggestionClick(suggestion)}>{suggestion}</Button>
                       </div>

@@ -10,7 +10,9 @@ export const APP_INFO: AppInfo = {
   copyright: 'Seminario de Antioquía',
   privacy_policy: '',
   default_language: 'es-ES',
-  disable_session_same_site: false, // set it to true if you want to embed the chatbot in an iframe
+  // El chatbot se muestra dentro de admin.antqa.test mediante un iframe.
+  // SameSite=None permite conservar la sesión entre ambos subdominios HTTPS.
+  disable_session_same_site: true,
 }
 
 export const isShowPrompt = false
